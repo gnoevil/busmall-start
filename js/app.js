@@ -33,14 +33,14 @@ function randImages() {
   count25++;
 
   if (count25 < 26) {
-    var randImg1 = Math.floor(Math.random() * (allProducts.length - 0));
-    var randImg2 = Math.floor(Math.random() * (allProducts.length - 0));
+    var randImg1 = Math.floor(Math.random() * (allProducts.length - 1));
+    var randImg2 = Math.floor(Math.random() * (allProducts.length - 1));
     while (randImg1 === randImg2) {
-      var randImg2 = Math.floor(Math.random() * (allProducts.length - 0));
+      var randImg2 = Math.floor(Math.random() * (allProducts.length - 1));
     }
-    var randImg3 = Math.floor(Math.random() * (allProducts.length - 0));
+    var randImg3 = Math.floor(Math.random() * (allProducts.length - 1));
     while ((randImg1 === randImg3) || (randImg2 === randImg3)) {
-      var randImg3 = Math.floor(Math.random() * (allProducts.length - 0));
+      var randImg3 = Math.floor(Math.random() * (allProducts.length -1));
     }
     // console.log(randImg1, randImg2, randImg3);
     imageEl1.src = allProducts[randImg1].path;
