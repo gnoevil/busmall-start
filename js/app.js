@@ -3,6 +3,9 @@
 var allProducts = [];
 var totalClicks = 0;
 var clickLimit = 25;
+var imageNameArray = [];
+var imageClicksArray = [];
+var imageShownArray = [];
 
 function Product(path) {
   this.path = 'img/' + path;
@@ -34,14 +37,12 @@ var oldIndices = [];
 
 function randImages(event) {
   totalClicks++;
-
   if (event) {
     var clickedProductIdx = parseInt(event.target.alt);
     allProducts[clickedProductIdx].numClicks++;
   }
   var imgTags = document.getElementsByClassName('clickable');
   var indices = [];
-
   for (var i = 0; i < imgTags.length; i++) {
     var idx = RandNum();
     while (indices.indexOf(idx) !== -1 || oldIndices.indexOf(idx) !== -1) {
@@ -49,9 +50,7 @@ function randImages(event) {
     }
     indices[i] = idx;
   }
-
   oldIndices = indices;
-
   var productsToBeSeen = [];
   //Loop through randomly generated indices
   for (var i = 0; i < indices.length; i++) {
@@ -68,38 +67,24 @@ function randImages(event) {
   if (totalClicks >= clickLimit) {
     for (var i = 0; i < imgTags.length; i++) {
       imgTags[i].removeEventListener('click', randImages);
+      showResults();
     }
-    var clickInfo = document.getElementById('click-info');
-    var ul = document.createElement('ul');
-    clickInfo.appendChild(ul);
 
     for (var i = 0; i < allProducts.length; i++) {
       var thisProduct = allProducts[i];
-      var li = document.createElement('li');
-      var fillerInfo = ' ';
-      fillerInfo += thisProduct.name;
       if (thisProduct.numShown === 0) {
-        fillerInfo += ' |  Click Rate 0%';
+        thisProduct.numShown += 0;
       } else {
-        fillerInfo += ' | Click Rate: ' + (thisProduct.numClicks / thisProduct.numShown * 100) + '%';
+        thisProduct += thisProduct.numClicks / thisProduct.numShown * 100;
       }
-      li.innerText = fillerInfo;
-      ul.appendChild(li);
     }
   }
 };
 
 randImages();
-totalClicks--;
+totalClicks = 0;
 //Add event listener
 var imgTags = document.getElementsByClassName('clickable');
 for (var i = 0; i < imgTags.length; i++) {
   imgTags[i].addEventListener('click', randImages);
-}
-//Utility function for what has been clicked and shown
-function productsShown() {
-  for (var i = 0; i < allProducts.length; i++) {
-    console.log(allProducts[i].name + ' shown ' + allProducts[i].numShown + ' times.');
-    console.log(allProducts[i].name + ' clicked ' + allProducts[i].numClicks + ' times.');
-  }
 }
