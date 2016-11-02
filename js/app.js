@@ -6,6 +6,7 @@ var clickLimit = 25;
 var imageNameArray = [];
 var imageClicksArray = [];
 var imageShownArray = [];
+var imagePercArray = [];
 
 function Product(path) {
   this.path = 'img/' + path;
@@ -67,7 +68,6 @@ function randImages(event) {
   if (totalClicks >= clickLimit) {
     for (var i = 0; i < imgTags.length; i++) {
       imgTags[i].removeEventListener('click', randImages);
-      showResults();
     }
 
     for (var i = 0; i < allProducts.length; i++) {
@@ -78,6 +78,7 @@ function randImages(event) {
         thisProduct += thisProduct.numClicks / thisProduct.numShown * 100;
       }
     }
+    showResults();
   }
 };
 
