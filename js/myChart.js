@@ -1,40 +1,82 @@
 'use strict';
 
-var ctx = document.getElementById('myChart');
-
-var myChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: [imageNameArray],
-    datasets: [{
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero:true
-        }
-      }]
-    }
+function getTableData() {
+  for (var i = 0; i < allProducts.length; i++) {
+    imageClicksArray.push(allProducts[i].numClicks);
+    imageNameArray.push(allProducts[i].name);
+    imageShownArray.push(allProducts[i].numShown);
   }
-});
+}
+function createTable() {
+  Chart.defaults.global.defaultFontColor = 'black';
+  Chart.defaults.global.defaultFontFamily = 'Work Sans';
+  Chart.defaults.global.defaultFontSize = 12;
+  var ctx = document.getElementById('myChart');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    responsive: true,
+    height: 950,
+    width: 950,
+    data: {
+      labels: imageNameArray,
+      datasets: [{
+        label: '# Times Clicked',
+        data: imageClicksArray,
+        backgroundColor: [
+          'rgba(255, 0, 0, 1, 0.3)',
+          'rgba(0, 255, 0, 1, 0.3)',
+          'rgba(0, 0, 255, 1, 0.3)',
+          'rgba(255, 255, 0, 1, 0.3)',
+          'rgba(0, 255, 255, 1, 0.3)',
+          'rgba(255, 255, 255, 1, 0.3)',
+          'rgba(128, 0, 0, 1, 0.3)',
+          'rgba(0, 128, 0, 1, 0.3)',
+          'rgba(0, 0, 128, 1, 0.3)',
+          'rgba(128, 128, 0, 1, 0.3)',
+          'rgba(128, 0, 128, 1, 0.3)',
+          'rgba(0, 128, 128, 1, 0.3)',
+          'rgba(128, 128, 128, 1, 0.3)',
+          'rgba(64, 0, 0, 1, 0.3)',
+          'rgba(0, 64, 0, 1, 0.3)',
+          'rgba(0, 0, 64, 1, 0.3)',
+          'rgba(64, 64, 0, 1, 0.3)',
+          'rgba(64, 0, 64, 1, 0.3)',
+          'rgba(0, 64, 64, 1, 0.3)',
+          'rgba(64, 64, 64, 1, 0.3)'
+        ]
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Sales Chart for Bus Mall'
+      },
+      maintainAspectRatio: true,
+      scales: {
+        xAxes: [{
+          ticks: {
+            autoSkip: false,
+          }
+        }],
+        yAxes: [{
+          height: 900,
+          ticks: {
+            stepSize: 1
+          },
+          scaleLabel: {
+            fontSize: 14,
+            display: true,
+            labelString: 'Times Clicked'
+          }
+        }]
+      },
+      legend: {
+        display: false,
+      }
+    }
+  });
+}
+function showResults() {
+  getTableData();
+  createTable();
+}
