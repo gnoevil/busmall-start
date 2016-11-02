@@ -1,88 +1,105 @@
 'use strict';
 
-var allNames = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
-
 var allProducts = [];
+var totalClicks = 0;
+var clickLimit = 25;
 
-var count25 = 0;
-
-var imageEl1 = document.getElementById('img1');
-var imageEl2 = document.getElementById('img2');
-var imageEl3 = document.getElementById('img3');
-
-function productImages(name) {
-  this.path = 'img/' + name + '.jpg';
-  this.name = name;
+function Product(path) {
+  this.path = 'img/' + path;
+  this.name = ' ';
   this.numClicks = 0;
   this.numShown = 0;
+  this.generateName = function(){
+    var splitName = path.split('.')[0];
+    var splitDash = splitName.split('-');
+    for (var i = 0; i < splitDash.length; i++){
+      var letters = splitDash[i].split(' ');
+      letters[0] = letters[0].toUpperCase();
+      splitDash[i] = letters.join(' ');
+    }
+    this.name = splitDash.join(' ');
+  };
+  this.generateName();
   allProducts.push(this);
 };
 
-productImages.prototype.updateClicks = function() {
-  this.numClicks++;
+for (var i = 0; i < productImage.length; i++) {
+  new Product(productImage[i]);
+}
+function RandNum() {
+  return Math.floor(Math.random() * allProducts.length);
 };
 
-productImages.prototype.updateShown = function() {
-  this.numShown++;
+var oldIndices = [];
+
+function randImages(event) {
+  totalClicks++;
+
+  if (event) {
+    var clickedProductIdx = parseInt(event.target.alt);
+    allProducts[clickedProductIdx].numClicks++;
+  }
+  var imgTags = document.getElementsByClassName('clickable');
+  var indices = [];
+
+  for (var i = 0; i < imgTags.length; i++) {
+    var idx = RandNum();
+    while (indices.indexOf(idx) !== -1 || oldIndices.indexOf(idx) !== -1) {
+      idx = RandNum();
+    }
+    indices[i] = idx;
+  }
+
+  oldIndices = indices;
+
+  var productsToBeSeen = [];
+  //Loop through randomly generated indices
+  for (var i = 0; i < indices.length; i++) {
+    var thisIdx = indices[i];
+    productsToBeSeen[i] = allProducts[thisIdx];
+    allProducts[thisIdx].numShown++;
+  }
+  //Loop through the image tags
+  for (var i = 0; i < imgTags.length; i++) {
+    imgTags[i].setAttribute('src', productsToBeSeen[i].path);
+    imgTags[i].setAttribute('alt', indices[i]);
+  }
+  //Remove event handler
+  if (totalClicks >= clickLimit) {
+    for (var i = 0; i < imgTags.length; i++) {
+      imgTags[i].removeEventListener('click', randImages);
+    }
+    var clickInfo = document.getElementById('click-info');
+    var ul = document.createElement('ul');
+    clickInfo.appendChild(ul);
+
+    for (var i = 0; i < allProducts.length; i++) {
+      var thisProduct = allProducts[i];
+      var li = document.createElement('li');
+      var fillerInfo = ' ';
+      fillerInfo += thisProduct.name;
+      if (thisProduct.numShown === 0) {
+        fillerInfo += ' |  Click Rate 0%';
+      } else {
+        fillerInfo += ' | Click Rate: ' + (thisProduct.numClicks / thisProduct.numShown * 100) + '%';
+      }
+      li.innerText = fillerInfo;
+      ul.appendChild(li);
+    }
+  }
 };
-productImages.prototype.getName = function() {
-  return this.name;
-};
 
-function randImages() {
-  count25++;
-
-  if (count25 < 26) {
-    var randImg1 = Math.floor(Math.random() * (allProducts.length - 0));
-    var randImg2 = Math.floor(Math.random() * (allProducts.length - 0));
-    while (randImg1 === randImg2) {
-      var randImg2 = Math.floor(Math.random() * (allProducts.length - 0));
-    }
-    var randImg3 = Math.floor(Math.random() * (allProducts.length - 0));
-    while ((randImg1 === randImg3) || (randImg2 === randImg3)) {
-      var randImg3 = Math.floor(Math.random() * (allProducts.length - 0));
-    }
-    // console.log(randImg1, randImg2, randImg3);
-    imageEl1.src = allProducts[randImg1].path;
-    imageEl2.src = allProducts[randImg2].path;
-    imageEl3.src = allProducts[randImg3].path;
-
-    allProducts[randImg1].updateShown();
-    allProducts[randImg2].updateShown();
-    allProducts[randImg3].updateShown();
-  } else {
-    displayStats();
-  }
-}
-
-function displayStats() {
-  for (var i = 0; i < allProducts.length; i++) {
-    console.log(allProducts[i].name + ' has ' + allProducts[i].numClicks + 'clicks, and has been displayed ' + allProducts[i].numShown + ' times.');
-  }
-  count25 = 0;
-}
-
-function clickHandler(event) {
-  var clickEl = document.getElementById(event.target.id);
-  var pathArray = ((clickEl.src).split('/'));
-  var length = pathArray.length;
-  var imgName = pathArray[length - 1].split('.');
-  // console.log(imgName[0]);
-
-  for (var i = 0; i < allProducts.length; i++) {
-    if (imgName[0] === allProducts[i].getName()) {
-      var clickIndex = i;
-      allProducts[i].updateClicks();
-    }
-  }
-  randImages();
-}
-
-for (var i = 0; i < allNames.length; i++) {
-  var newImg = new productImages(allNames[i]);
-}
 randImages();
-
-imageEl1.addEventListener('click', clickHandler);
-imageEl2.addEventListener('click', clickHandler);
-imageEl3.addEventListener('click', clickHandler);
+totalClicks--;
+//Add event listener
+var imgTags = document.getElementsByClassName('clickable');
+for (var i = 0; i < imgTags.length; i++) {
+  imgTags[i].addEventListener('click', randImages);
+}
+//Utility function for what has been clicked and shown
+function productsShown() {
+  for (var i = 0; i < allProducts.length; i++) {
+    console.log(allProducts[i].name + ' shown ' + allProducts[i].numShown + ' times.');
+    console.log(allProducts[i].name + ' clicked ' + allProducts[i].numClicks + ' times.');
+  }
+}
