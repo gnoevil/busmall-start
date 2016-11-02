@@ -3,6 +3,9 @@
 var allProducts = [];
 var totalClicks = 0;
 var clickLimit = 25;
+var imageNameArray = [];
+var imageClicksArray = [];
+var imageShownArray = [];
 
 function Product(path) {
   this.path = 'img/' + path;
@@ -21,6 +24,7 @@ function Product(path) {
   };
   this.generateName();
   allProducts.push(this);
+  imageNameArray.push(this.name);
 };
 
 for (var i = 0; i < productImage.length; i++) {
@@ -69,22 +73,17 @@ function randImages(event) {
     for (var i = 0; i < imgTags.length; i++) {
       imgTags[i].removeEventListener('click', randImages);
     }
-    var clickInfo = document.getElementById('click-info');
-    var ul = document.createElement('ul');
-    clickInfo.appendChild(ul);
+    // var clickInfo = document.getElementById('click-info');
+    // var ul = document.createElement('ul');
+    // clickInfo.appendChild(ul);
 
     for (var i = 0; i < allProducts.length; i++) {
       var thisProduct = allProducts[i];
-      var li = document.createElement('li');
-      var fillerInfo = ' ';
-      fillerInfo += thisProduct.name;
       if (thisProduct.numShown === 0) {
-        fillerInfo += ' |  Click Rate 0%';
+        thisProduct.numShown += 0;
       } else {
-        fillerInfo += ' | Click Rate: ' + (thisProduct.numClicks / thisProduct.numShown * 100) + '%';
+        thisProduct += thisProduct.numClicks / thisProduct.numShown * 100;
       }
-      li.innerText = fillerInfo;
-      ul.appendChild(li);
     }
   }
 };
@@ -99,7 +98,9 @@ for (var i = 0; i < imgTags.length; i++) {
 //Utility function for what has been clicked and shown
 function productsShown() {
   for (var i = 0; i < allProducts.length; i++) {
-    console.log(allProducts[i].name + ' shown ' + allProducts[i].numShown + ' times.');
-    console.log(allProducts[i].name + ' clicked ' + allProducts[i].numClicks + ' times.');
+    imageNameArray.push(allProducts[i].name);
+    imageShownArray.push(allProducts[i].numShown);
+    imageClicksArray.push(allProducts[i].numClicks);
   }
 }
+productsShown();
