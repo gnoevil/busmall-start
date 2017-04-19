@@ -5,7 +5,7 @@ function getTableData() {
     imageClicksArray.push(allProducts[i].numClicks);
     imageNameArray.push(allProducts[i].name);
     imageShownArray.push(allProducts[i].numShown);
-    imagePercArray.push(Math.ceil((allProducts[i].nnumClicks / allProducts[i].numShown) * 100));
+    imagePercArray.push(Math.ceil((imageClicksArray[i] / imageShownArray[i]) * 100));
   }
 
 }
